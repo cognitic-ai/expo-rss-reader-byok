@@ -7,6 +7,7 @@ export interface RSSItem {
   pubDate: string;
   guid: string;
   category?: string | string[];
+  imageUrl?: string;
 }
 
 export interface RSSFeed {
@@ -46,6 +47,7 @@ export async function fetchRSSFeed(url: string): Promise<RSSFeed> {
         pubDate: item.pubDate,
         guid: item.guid?.['#text'] || item.guid || item.link,
         category: item.category,
+        imageUrl: item['media:thumbnail']?.['@_url'] || item['media:content']?.['@_url'],
       })),
     };
   } catch (error) {

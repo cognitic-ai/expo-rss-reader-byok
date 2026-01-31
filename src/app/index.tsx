@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import * as AC from "@bacons/apple-colors";
 import { Link } from "expo-router";
+import { Image } from "expo-image";
 import { fetchRSSFeed, RSSItem, stripHtml, formatDate } from "@/utils/rss";
 
 const RSS_URL = "https://expo.dev/changelog/rss.xml";
@@ -131,6 +132,7 @@ function ArticleCard({ item }: { item: RSSItem }) {
           link: item.link,
           description: item.description,
           pubDate: item.pubDate,
+          imageUrl: item.imageUrl || "",
         },
       }}
       asChild
@@ -140,7 +142,7 @@ function ArticleCard({ item }: { item: RSSItem }) {
           backgroundColor: AC.secondarySystemGroupedBackground,
           borderRadius: 12,
           borderCurve: "continuous",
-          padding: 16,
+          overflow: "hidden",
           opacity: pressed ? 0.7 : 1,
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 1 },
@@ -148,39 +150,55 @@ function ArticleCard({ item }: { item: RSSItem }) {
           shadowRadius: 3,
         })}
       >
-        <Text
-          selectable
-          style={{
-            fontSize: 17,
-            fontWeight: "600",
-            color: AC.label,
-            marginBottom: 6,
-          }}
-          numberOfLines={2}
-        >
-          {item.title}
-        </Text>
-        <Text
-          selectable
-          style={{
-            fontSize: 15,
-            color: AC.secondaryLabel,
-            marginBottom: 8,
-            lineHeight: 20,
-          }}
-          numberOfLines={3}
-        >
-          {stripHtml(item.description)}
-        </Text>
-        <Text
-          selectable
-          style={{
-            fontSize: 13,
-            color: AC.tertiaryLabel,
-          }}
-        >
-          {formatDate(item.pubDate)}
-        </Text>
+        {item.imageUrl && (
+          <Image
+            source={{ uri: item.imageUrl }}
+            style={{
+              width: "100%",
+              height: 200,
+              backgroundColor: AC.tertiarySystemFill,
+            }}
+            contentFit="cover"
+            transition={200}
+          />
+        )}
+        <View style={{ padding: 16 }}>
+          <Text
+            selectable
+            style={{
+              fontSize: 17,
+              fontWeight: "600",
+              color: AC.label,
+              marginBottom: 6,
+            }}
+            numberOfLines={2}
+          >
+            {item.title}
+          </Text>
+          {item.description && (
+            <Text
+              selectable
+              style={{
+                fontSize: 15,
+                color: AC.secondaryLabel,
+                marginBottom: 8,
+                lineHeight: 20,
+              }}
+              numberOfLines={3}
+            >
+              {stripHtml(item.description)}
+            </Text>
+          )}
+          <Text
+            selectable
+            style={{
+              fontSize: 13,
+              color: AC.tertiaryLabel,
+            }}
+          >
+            {formatDate(item.pubDate)}
+          </Text>
+        </View>
       </Pressable>
     </Link>
   );

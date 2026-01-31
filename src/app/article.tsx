@@ -2,6 +2,7 @@ import { useLocalSearchParams } from "expo-router";
 import { ScrollView, View, Text, Pressable } from "react-native";
 import * as AC from "@bacons/apple-colors";
 import * as WebBrowser from "expo-web-browser";
+import { Image } from "expo-image";
 import { formatDate, stripHtml } from "@/utils/rss";
 
 export default function ArticleRoute() {
@@ -10,6 +11,7 @@ export default function ArticleRoute() {
     link: string;
     description: string;
     pubDate: string;
+    imageUrl: string;
   }>();
 
   const handleOpenLink = async () => {
@@ -26,6 +28,18 @@ export default function ArticleRoute() {
         backgroundColor: AC.systemBackground,
       }}
     >
+      {params.imageUrl && (
+        <Image
+          source={{ uri: params.imageUrl }}
+          style={{
+            width: "100%",
+            height: 300,
+            backgroundColor: AC.tertiarySystemFill,
+          }}
+          contentFit="cover"
+          transition={200}
+        />
+      )}
       <View style={{ padding: 20 }}>
         <Text
           selectable
@@ -51,17 +65,19 @@ export default function ArticleRoute() {
           {params.pubDate ? formatDate(params.pubDate) : ""}
         </Text>
 
-        <Text
-          selectable
-          style={{
-            fontSize: 17,
-            color: AC.label,
-            lineHeight: 26,
-            marginBottom: 32,
-          }}
-        >
-          {stripHtml(params.description || "")}
-        </Text>
+        {params.description && (
+          <Text
+            selectable
+            style={{
+              fontSize: 17,
+              color: AC.label,
+              lineHeight: 26,
+              marginBottom: 32,
+            }}
+          >
+            {stripHtml(params.description)}
+          </Text>
+        )}
 
         <Pressable
           onPress={handleOpenLink}
